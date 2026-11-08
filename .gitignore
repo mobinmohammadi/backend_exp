@@ -1,0 +1,115 @@
+# =========================
+# متغیرهای محیطی و فایل‌های حساس
+# =========================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# =========================
+# وابستگی‌ها
+# =========================
+node_modules/
+jspm_packages/
+.pnp
+.pnp.js
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# =========================
+# لاگ‌ها
+# =========================
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# =========================
+# پوشه build و خروجی
+# =========================
+dist/
+build/
+out/
+.next/
+.nuxt/
+.cache/
+.parcel-cache/
+.turbo/
+*.tsbuildinfo
+
+# =========================
+# Prisma
+# =========================
+prisma/*.db
+prisma/*.db-journal
+# اگر مایگریشن‌ها را می‌خواهید نگه دارید، خط زیر را کامنت بگذارید:
+# prisma/migrations/
+
+# =========================
+# تست و پوشش کد
+# =========================
+coverage/
+.nyc_output/
+*.lcov
+
+# =========================
+# سیستم‌عامل
+# =========================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# =========================
+# ادیتورها و IDE
+# =========================
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# =========================
+# فایل‌های موقت
+# =========================
+tmp/
+temp/
+*.tmp
+*.bak
+*.orig
+*.rej
+
+# =========================
+# Docker (در صورت استفاده)
+# =========================
+.dockerignore
+
+# =========================
+# Render / Vercel / Netlify
+# =========================
+.vercel
+.netlify/
+.render/
+
+# =========================
+# misc
+# =========================
+.eslintcache
+.stylelintcache
