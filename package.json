@@ -8,8 +8,7 @@
   },
   "scripts": {
     "dev": "nodemon server.js",
-    "start": "node server.js",
-    "build": "prisma generate && rimraf dist && tsc && tsc-alias"
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
