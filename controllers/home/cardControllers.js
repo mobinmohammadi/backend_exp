@@ -39,18 +39,11 @@ class cardControllers {
   };
 
   get_cart_products = async(req,res) => {
-    const { id } = req
+    
 
 
-    try {
-        const productInBasket = await cartModel.filter(id)
-        console.log(productInBasket);
-        responseReturn(res,200 , {productInBasket})
-        
-    } catch (error) {
-        responseReturn(res,404 , {error : error.message})
-        
-    }
+    console.log("hellow");
+    
     
 
   }
