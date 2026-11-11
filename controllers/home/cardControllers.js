@@ -9,7 +9,6 @@ const {
 
 class cardControllers {
   add_to_cart = async (req, res) => {
-
     const { userId, quantity, productId } = req.body;
     try {
       const product = await cartModel.findOne({
@@ -22,7 +21,6 @@ class cardControllers {
       });
 
       if (product) {
-
         responseReturn(res, 404, { error: "The Product Allready exist" });
       } else {
         const product = await cartModel.create({
@@ -148,11 +146,8 @@ class cardControllers {
   };
 
   delete_cart_product = async (req, res) => {
-    
     const { productId } = req.params;
     console.log(req.params);
-    
-
 
     try {
       await cartModel.findByIdAndDelete(productId);
@@ -160,6 +155,39 @@ class cardControllers {
       responseReturn(res, 200, { message: "The Product Delete Succussfully" });
     } catch (error) {
       console.log("error ==>", error.message);
+    }
+  };
+
+  inccrement_product = async (req, res) => {
+    console.log(req.params);
+    const { cartId } = req.params;
+    try {
+
+      const product = await cartModel.findById(cartId)      
+      const { quantity } = product
+      await cartModel.findByIdAndUpdate(cartId, { quantity: quantity + 1 });
+      responseReturn(res, 200, { message: "Qty inccrement" });
+    } catch (error) {
+      console.log(error);
+      responseReturn(res, 500, { error : error.message });
+      
+      
+    }
+  };
+  deccrement_product = async (req, res) => {
+    console.log(req.params);
+    const { cartId } = req.params;
+    try {
+
+      const product = await cartModel.findById(cartId)      
+      const { quantity } = product
+      await cartModel.findByIdAndUpdate(cartId, { quantity: quantity - 1 });
+      responseReturn(res, 200, { message: "Qty deccrement" });
+    } catch (error) {
+      console.log(error);
+      responseReturn(res, 500, { error : error.message });
+      
+      
     }
   };
 }
