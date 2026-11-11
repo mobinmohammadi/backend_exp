@@ -1,48 +1,46 @@
-  const { response } = require("express");
-  const cartModel = require("../../models/cartModel");
-  const productModel = require("../../models/productModel");
-  const { responseReturn } = require("../../utils/response");
+const { response } = require("express");
+const cartModel = require("../../models/cartModel");
+const productModel = require("../../models/productModel");
+const { responseReturn } = require("../../utils/response");
 
-  const {
-    mongo: { ObjectId },
-  } = require("mongoose");
+const {
+  mongo: { ObjectId },
+} = require("mongoose");
 
-  class cardControllers {
-    add_to_cart = async (req, res) => {
-      console.log(req.body);
+class cardControllers {
+  add_to_cart = async (req, res) => {
 
-      const { userId, quantity, productId } = req.body;
-      try {
-        const product = await cartModel.findOne({
-          $and: [
-            {
-              productId: { $eq: productId },
-              userId: { $eq: userId },
-            },
-          ],
+    const { userId, quantity, productId } = req.body;
+    try {
+      const product = await cartModel.findOne({
+        $and: [
+          {
+            productId: { $eq: productId },
+            userId: { $eq: userId },
+          },
+        ],
+      });
+
+      if (product) {
+
+        responseReturn(res, 404, { error: "The Product Allready exist" });
+      } else {
+        const product = await cartModel.create({
+          userId,
+          quantity,
+          productId,
         });
-
-        if (product) {
-          console.log(product);
-
-          responseReturn(res, 404, { error: "The Product Allready exist" });
-        } else {
-          const product = await cartModel.create({
-            userId,
-            quantity,
-            productId,
-          });
-          responseReturn(res, 201, {
-            product,
-            message: "The Addedd Product The basket",
-          });
-        }
-      } catch (error) {
-        responseReturn(res, 500, { error: "Internall server Error" });
+        responseReturn(res, 201, {
+          product,
+          message: "The Addedd Product The basket",
+        });
       }
-    };
+    } catch (error) {
+      responseReturn(res, 500, { error: "Internall server Error" });
+    }
+  };
 
-   get_cart_products = async (req, res) => {
+  get_cart_products = async (req, res) => {
     const { userId } = req.params;
     const co = 5;
 
@@ -77,11 +75,11 @@
         Array.isArray(p.products) && p.products.length > 0 && p.products[0];
 
       const outOfStockProduct = cart_products.filter(
-        (p) => !hasProduct(p) || p.products[0].stock < p.quantity
+        (p) => !hasProduct(p) || p.products[0].stock < p.quantity,
       );
 
       const stockProduct = cart_products.filter(
-        (p) => hasProduct(p) && p.products[0].stock >= p.quantity
+        (p) => hasProduct(p) && p.products[0].stock >= p.quantity,
       );
 
       let buy_product_item = 0;
@@ -148,6 +146,21 @@
       return responseReturn(res, 500, { error: error.message });
     }
   };
-  }
 
-  module.exports = new cardControllers();
+  delete_cart_product = async (req, res) => {
+    
+    const { productId } = req.params;
+    console.log(req.params);
+    
+
+
+    try {
+      await cartModel.findByIdAndDelete(productId);
+
+      responseReturn(res, 200, { message: "The Product Delete Succussfully" });
+    } catch (error) {
+      console.log("error ==>", error.message);
+    }
+  };
+}
+module.exports = new cardControllers();
