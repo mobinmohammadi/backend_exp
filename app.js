@@ -27,6 +27,6 @@ app.use("/api", require("./routes/authRoutes"));
 app.use("/api", require("./routes/dashboard/categoryRoutes"));
 app.use("/api", require("./routes/dashboard/productsRoutes"));
 app.use("/api", require("./routes/dashboard/sellersRoutes"));
-app.get("/", (req, res) => res.send("My Backend"));
+app.get("/", (req, res) => res.send("سللام من بک توسعه داده شده توسط RC هستم"));
 dbConnect();
 app.listen(port, () => console.log(`Server is Running on Port ${port} 🤙`));
