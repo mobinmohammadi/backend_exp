@@ -1,4 +1,3 @@
-
 const express = require("express");
 const app = express();
 
@@ -37,12 +36,15 @@ app.get("/", (req, res) => {
   res.send("سلام من بک توسعه داده شده توسط RC هستم");
 });
 
-// if (process.env.VERCEL) {
-//   module.exports = app;
-// } else {
-  dbConnect();
+// 1. اتصال به دیتابیس را در سطح ماژول صدا بزنید (Vercel آن را کش می‌کند)
+dbConnect();
 
+// 2. اپلیکیشن را Export کنید (برای Vercel)
+module.exports = app;
+
+// 3. فقط در محیط لوکال از listen استفاده کنید
+if (process.env.mode !== "production" && !process.env.VERCEL) {
   app.listen(port, () => {
     console.log(`Server is Running on Port ${port}`);
   });
-// }
+}
