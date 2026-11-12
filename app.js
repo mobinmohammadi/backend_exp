@@ -24,9 +24,12 @@ app.use("/api/home", require("./routes/home/homeRoutes"));
 app.use("/api", require("./routes/home/customerRoutes"));
 app.use("/api", require("./routes/home/cartRoutes"));
 app.use("/api", require("./routes/authRoutes"));
+app.use("/api", require("./routes/orders/ordersRoutes"));
 app.use("/api", require("./routes/dashboard/categoryRoutes"));
 app.use("/api", require("./routes/dashboard/productsRoutes"));
 app.use("/api", require("./routes/dashboard/sellersRoutes"));
+app.use("/api/telegram", require("./routes/telegram/telegramRoutes"));
+
 app.get("/", (req, res) => res.send("سلام من بک توسعه داده شده توسط RC هستم"));
 dbConnect();
 app.listen(port, () => console.log(`Server is Running on Port ${port} 🤙`));

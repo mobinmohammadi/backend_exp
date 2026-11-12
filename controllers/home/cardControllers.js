@@ -1,6 +1,4 @@
-const { response } = require("express");
 const cartModel = require("../../models/cartModel");
-const productModel = require("../../models/productModel");
 const { responseReturn } = require("../../utils/response");
 
 const {
