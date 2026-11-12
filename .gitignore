@@ -113,3 +113,4 @@ temp/
 # =========================
 .eslintcache
 .stylelintcache
+.env*

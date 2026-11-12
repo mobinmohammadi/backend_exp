@@ -1,20 +1,23 @@
+
 const express = require("express");
 const app = express();
+
 require("dotenv").config();
+
 const cors = require("cors");
-const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const { dbConnect } = require("./utils/db");
-const port = process.env.PORT;
+
+const port = process.env.PORT || 5000;
 
 app.use(
   cors({
     origin:
-      process.env.mode == "pro"
+      process.env.mode === "pro"
         ? [process.env.client_customer_production_url]
         : ["http://localhost:5173"],
     credentials: true,
-  }),
+  })
 );
 
 app.use(express.json());
@@ -30,6 +33,16 @@ app.use("/api", require("./routes/dashboard/productsRoutes"));
 app.use("/api", require("./routes/dashboard/sellersRoutes"));
 app.use("/api/telegram", require("./routes/telegram/telegramRoutes"));
 
-app.get("/", (req, res) => res.send("سلام من بک توسعه داده شده توسط RC هستم"));
-dbConnect();
-app.listen(port, () => console.log(`Server is Running on Port ${port} 🤙`));
+app.get("/", (req, res) => {
+  res.send("سلام من بک توسعه داده شده توسط RC هستم");
+});
+
+if (process.env.VERCEL) {
+  module.exports = app;
+} else {
+  dbConnect();
+
+  app.listen(port, () => {
+    console.log(`Server is Running on Port ${port}`);
+  });
+}
