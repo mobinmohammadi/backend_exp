@@ -37,12 +37,12 @@ app.get("/", (req, res) => {
   res.send("سلام من بک توسعه داده شده توسط RC هستم");
 });
 
-if (process.env.VERCEL) {
-  module.exports = app;
-} else {
+// if (process.env.VERCEL) {
+//   module.exports = app;
+// } else {
   dbConnect();
 
   app.listen(port, () => {
     console.log(`Server is Running on Port ${port}`);
   });
-}
+// }
