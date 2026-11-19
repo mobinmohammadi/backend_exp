@@ -9,25 +9,13 @@ const { dbConnect } = require("./utils/db");
 
 const port = process.env.PORT || 5000;
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://eccomerce011.vercel.app",
-  process.env.client_customer_production_url,
-].filter(Boolean);
-
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // درخواست‌هایی که origin ندارند (مثل بعضی ابزارها)
-      if (!origin || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      return callback(new Error(`CORS blocked: ${origin}`));
-    },
+    origin:
+      process.env.mode === "pro"
+        ? [process.env.client_customer_production_url]
+        : ["http://localhost:5173"],
     credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
@@ -48,13 +36,10 @@ app.get("/", (req, res) => {
   res.send("سلام من بک توسعه داده شده توسط RC هستم");
 });
 
-// 1. اتصال به دیتابیس را در سطح ماژول صدا بزنید (Vercel آن را کش می‌کند)
 dbConnect();
 
-// 2. اپلیکیشن را Export کنید (برای Vercel)
 module.exports = app;
 
-// 3. فقط در محیط لوکال از listen استفاده کنید
 if (process.env.mode !== "production" && !process.env.VERCEL) {
   app.listen(port, () => {
     console.log(`Server is Running on Port ${port}`);

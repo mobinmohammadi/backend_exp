@@ -87,10 +87,9 @@ class homeControllers {
 
   query_products = async (req, res) => {
     const parPage = 6;
-    const query = {...req.query , parPage}
+    const query = { ...req.query, parPage };
     req.query.parPage = parPage;
     console.log(query);
-
 
     try {
       const products = await productModel.find({}).sort({
@@ -115,6 +114,20 @@ class homeControllers {
       responseReturn(res, 200, { products: result, totalProduct, parPage });
     } catch (error) {
       console.log(error.message);
+    }
+  };
+  get_details_product = async (req, res) => {
+    console.log(req.params);
+
+    const { slug } = req.params;
+    try {
+      const product = await productModel.findOne({
+        slug
+      });
+      
+      responseReturn(res, 200, { product });
+    } catch (error) {
+      responseReturn(res, 500, { error: error.message });
     }
   };
 }
