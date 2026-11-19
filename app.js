@@ -9,13 +9,25 @@ const { dbConnect } = require("./utils/db");
 
 const port = process.env.PORT || 5000;
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://eccomerce011.vercel.app",
+  process.env.client_customer_production_url,
+].filter(Boolean);
+
 app.use(
   cors({
-    origin:
-      process.env.mode === "pro"
-        ? [process.env.client_customer_production_url]
-        : ["http://localhost:5173"],
+    origin: function (origin, callback) {
+      // درخواست‌هایی که origin ندارند (مثل بعضی ابزارها)
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS blocked: ${origin}`));
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
