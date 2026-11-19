@@ -1,4 +1,5 @@
 const cartModel = require("../../models/cartModel");
+const wishModel = require("../../models/wishModel");
 const { responseReturn } = require("../../utils/response");
 
 const {
@@ -160,32 +161,97 @@ class cardControllers {
     console.log(req.params);
     const { cartId } = req.params;
     try {
-
-      const product = await cartModel.findById(cartId)      
-      const { quantity } = product
+      const product = await cartModel.findById(cartId);
+      const { quantity } = product;
       await cartModel.findByIdAndUpdate(cartId, { quantity: quantity + 1 });
       responseReturn(res, 200, { message: "Qty inccrement" });
     } catch (error) {
       console.log(error);
-      responseReturn(res, 500, { error : error.message });
-      
-      
+      responseReturn(res, 500, { error: error.message });
     }
   };
   deccrement_product = async (req, res) => {
     console.log(req.params);
     const { cartId } = req.params;
     try {
-
-      const product = await cartModel.findById(cartId)      
-      const { quantity } = product
+      const product = await cartModel.findById(cartId);
+      const { quantity } = product;
       await cartModel.findByIdAndUpdate(cartId, { quantity: quantity - 1 });
       responseReturn(res, 200, { message: "Qty deccrement" });
     } catch (error) {
       console.log(error);
-      responseReturn(res, 500, { error : error.message });
-      
-      
+      responseReturn(res, 500, { error: error.message });
+    }
+  };
+
+  add_wish_product = async (req, res) => {
+    const { userId, productId, rating, discount, image, slug, price, name } =
+      req.body;
+    console.log(userId, productId, rating, discount, image, slug, price, name);
+
+    try {
+      const existingWish = await wishModel.findOne({ slug });
+      if (existingWish) {
+        responseReturn(res, 400, {
+          error: "The Product Wish Exist",
+        });
+      } else {
+        await wishModel.create({
+          userId,
+          productId,
+          rating,
+          discount,
+          image,
+          slug,
+          price,
+          name,
+        });
+        const wishlistCount = await wishModel.find({}).countDocuments();
+        responseReturn(res, 201, {
+          wishlistCount,
+          message: " Product Is Allready In WishList",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  get_products_in_wish = async (req, res) => {
+    try {
+      const wishList = await wishModel.find({});
+      const wishlistCount = await wishModel.find({}).countDocuments();
+
+      responseReturn(res, 200, {
+        wishList,
+        wishlistCount,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  delete_product_in_wish = async (req, res) => {
+    const { productId } = req.params;
+    console.log(productId);
+
+    try {
+      const deletedProduct = await wishModel.findByIdAndDelete({
+        _id: new ObjectId(productId),
+      });
+      if (deletedProduct) {
+        const wishList = await wishModel.find({});
+
+        responseReturn(res, 201, {
+          wishList,
+          wishlistCount : wishList.length,
+          message: "Delete Product In wish list",
+        });
+      }
+    } catch (error) {
+      console.log(error.message);
+
+      responseReturn(res, 500, {
+        error: "Erorr Delete Product In wish list",
+      });
     }
   };
 }

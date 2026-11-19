@@ -2,8 +2,10 @@ const { Schema, model } = require("mongoose");
 
 const customerOrderSechma = new Schema(
   {
-    customerOrder: {
-      type: Schema.ObjectId,
+    customerId: {
+      type: Schema.Types.ObjectId,
+      ref: "customers",
+      index: true,
     },
     products: {
       type: Array,

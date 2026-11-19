@@ -1,6 +1,13 @@
 const { Schema, model } = require("mongoose");
 const customerSechma = new Schema(
   {
+
+    customerId: {
+      type: Schema.Types.ObjectId,
+      ref: "customers",
+      required: false,
+      index: true,
+    },
     name: {
       type: String,
       required: true,

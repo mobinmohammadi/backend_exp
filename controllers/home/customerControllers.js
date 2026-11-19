@@ -6,6 +6,7 @@ const { createToken } = require("../../utils/createToken");
 const { responseReturn } = require("../../utils/response");
 const SellerCustomerModel = require("../../models/chat/SellerCustomerModel");
 const customerModel = require("../../models/customerModel");
+const wishsModel = require("../../models/wishModel");
 
 class customerControllers {
   user_register = async (req, res) => {
@@ -84,5 +85,7 @@ class customerControllers {
   };
 
   get_user = async (req, res) => {};
+
+
 }
 module.exports = new customerControllers();

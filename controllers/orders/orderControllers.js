@@ -1,13 +1,15 @@
 const cartModel = require("../../models/cartModel");
 const { responseReturn } = require("../../utils/response");
 const moment = require("moment/moment");
-const { sendNewOrderNotification } = require("../../utils/telegram");
+const { notifyNewOrder } = require("../../services/telegramAdmin");
+const {
+  mongo: { ObjectId },
+} = require("mongoose");
 
 const customerOrder = require("../../models/customerOrder");
 const authOrderModel = require("../../models/authOrder");
-
-const sendTelegramMessage = require("../../utils/telegram");
-
+const customerModel = require("../../models/customerModel");
+// const { notifyNewOrder } = require("../../utils/telegram");
 class oredrsControllers {
   paymentCheck = async (id) => {
     try {
@@ -124,7 +126,7 @@ class oredrsControllers {
 
       // Send Telegram Notification
       try {
-        await sendNewOrderNotification(order);
+        await notifyNewOrder(order);
 
         console.log("Telegram order notification sent");
       } catch (error) {
@@ -141,7 +143,6 @@ class oredrsControllers {
         this.paymentCheck(order.id);
       }, 15000);
 
-      // Response
       return responseReturn(res, 200, {
         message: "Order Placed Success",
 
@@ -153,6 +154,82 @@ class oredrsControllers {
       return responseReturn(res, 500, {
         message: "Order Failed",
       });
+    }
+  };
+
+  get_customer_dashboard_data = async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+      const recendOrders = await customerOrder
+        .find({
+          customerId: new ObjectId(userId),
+        })
+        .limit(5);
+      const pendingOrders = await customerOrder
+        .find({
+          customerId: new ObjectId(userId),
+          delivery_status: "pending",
+        })
+        .countDocuments(5);
+
+      const totalOrders = await customerOrder
+        .find({
+          customerId: new ObjectId(userId),
+        })
+        .countDocuments();
+
+      const cancelledOrders = await customerOrder
+        .find({
+          customerId: new ObjectId(userId),
+          delivery_status: "cancelled",
+        })
+        .countDocuments();
+
+      responseReturn(res, 200, {
+        recendOrders,
+        pendingOrders,
+        totalOrders,
+        cancelledOrders,
+      });
+    } catch (error) {
+      console.log("error", error.message); // ← املای درست
+      responseReturn(res, 500, { message: error.message });
+    }
+  };
+
+  get_orders = async (req, res) => {
+    console.log(req.params);
+    const { customerId, status } = req.params;
+
+    try {
+      // const order = await customerOrder.find({customerId : new ObjectId(customerId)})
+
+      const allOrders = await customerOrder.find({
+        customerId: new ObjectId(customerId),
+      });
+
+      responseReturn(res, 200, {
+        allOrders,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  get_details_order = async (req, res) => {
+    console.log(req.params);
+    const { orderId } = req.params;
+
+    try {
+      const detailsOrder = await customerOrder.findById({
+        _id : new ObjectId(orderId)
+      })
+      
+      responseReturn(res,200 , {detailsOrder})
+    } catch (error) {
+      console.log(error);
+      
     }
   };
 }
