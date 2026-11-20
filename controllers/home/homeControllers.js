@@ -122,12 +122,32 @@ class homeControllers {
     const { slug } = req.params;
     try {
       const product = await productModel.findOne({
-        slug
+        slug,
       });
-      
-      responseReturn(res, 200, { product });
+      if (!product) {
+        return responseReturn(res, 404, {
+          message: "Product not found",
+        });
+      }
+
+      const relatedProducts = await productModel
+        .find({
+          _id: { $ne: product.id },
+          category: product.category,
+        })
+        .limit(10);
+
+      const moreProducts = await productModel
+        .find({
+          _id: { $ne: product._id },
+          sellerId: product.sellerId,
+        })
+        .limit(10);
+
+      responseReturn(res, 200, { product, relatedProducts, moreProducts });
     } catch (error) {
-      responseReturn(res, 500, { error: error.message });
+      responseReturn(res, 500, { error: error });
+      console.log(error);
     }
   };
 }
